@@ -1,10 +1,14 @@
 package hexlet.code;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.RootController;
 import io.javalin.Javalin;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.repository.BasicRepository;
-
+import io.javalin.rendering.template.JavalinJte;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,34 +20,22 @@ import java.util.stream.Collectors;
 
 public class App {
     public static Javalin getApp() throws IOException, SQLException {
-
         var hikariConfig = new HikariConfig();
-
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         var dataSource = new HikariDataSource(hikariConfig);
-
-        var url = App.class.getClassLoader().getResource("schema.sql");
-
-        String sql = getContentFromStream(getFileFromResourceAsStream("schema.sql"));
-
+        var url = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        var sql = new BufferedReader(new InputStreamReader(url))
+                .lines().collect(Collectors.joining("\n"));
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
         }
         BasicRepository.dataSource = dataSource;
-
         Javalin app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
-
-        app.get("/", ctx -> {
-            ctx.result("Hello world!");
-        });
-
-        app.before(ctx -> {
-            ctx.attribute("ctx", ctx);
-        });
-
+        app.get("/", RootController::index);
         return app;
     }
 
@@ -65,6 +57,13 @@ public class App {
     private static InputStream getFileFromResourceAsStream(String fileName) {
         ClassLoader classLoader = App.class.getClassLoader();
         return classLoader.getResourceAsStream(fileName);
+    }
+
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
+        return templateEngine;
     }
 
     public static void main(String[] args) throws SQLException, IOException {
