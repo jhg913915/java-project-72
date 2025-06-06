@@ -52,12 +52,12 @@ public class AppTest {
     }
 
     @BeforeEach
-    void initApp() throws SQLException, IOException {
+    final void initApp() throws SQLException, IOException {
         webApp = App.getApp();
     }
 
     @Test
-    void homepageShouldLoad() {
+    final void homepageShouldLoad() {
         JavalinTest.test(webApp, (server, http) -> {
             var res = http.get("/");
             assertThat(res.code()).isEqualTo(200);
@@ -66,7 +66,7 @@ public class AppTest {
     }
 
     @Test
-    void urlsOverviewShouldBeAvailable() {
+    final void urlsOverviewShouldBeAvailable() {
         JavalinTest.test(webApp, (server, http) -> {
             var res = http.get("/urls");
             assertThat(res.code()).isEqualTo(200);
@@ -74,7 +74,7 @@ public class AppTest {
     }
 
     @Test
-    void postingValidUrlShouldSucceed() {
+    final void postingValidUrlShouldSucceed() {
         JavalinTest.test(webApp, (server, http) -> {
             var form = "url=https://www.example.com";
             var response = http.post("/urls", form);
@@ -84,7 +84,7 @@ public class AppTest {
     }
 
     @Test
-    void duplicateUrlShouldBeIgnored() {
+    final void duplicateUrlShouldBeIgnored() {
         JavalinTest.test(webApp, (server, http) -> {
             var urlPayload = "url=https://www.example.com";
             http.post(NamedRoutes.urlsPath(), urlPayload);
@@ -100,7 +100,7 @@ public class AppTest {
     }
 
     @Test
-    void requestingNonexistentUrlShouldFail() {
+    final void requestingNonexistentUrlShouldFail() {
         JavalinTest.test(webApp, (server, http) -> {
             var result = http.get("/urls/9999");
             assertThat(result.code()).isEqualTo(404);
@@ -108,7 +108,7 @@ public class AppTest {
     }
 
     @Test
-    void checkingUrlShouldCreateCheckRecord() {
+    final void checkingUrlShouldCreateCheckRecord() {
         JavalinTest.test(webApp, (server, http) -> {
             String urlFromStub = serverStub.url("/").toString();
             Url newUrl = new Url(urlFromStub);
