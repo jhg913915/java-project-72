@@ -120,7 +120,7 @@ public class AppTest {
             List<UrlCheck> checks = UrlCheckRepository.findByUrlId(newUrl.getId());
             assertThat(checks).hasSize(1);
 
-            UrlCheck check = checks.get(0);
+            UrlCheck check = checks.getFirst();
             assertThat(check.getUrlId()).isEqualTo(newUrl.getId());
             assertThat(check.getStatusCode()).isEqualTo(200);
             assertThat(check.getCreatedAt()).isToday();
