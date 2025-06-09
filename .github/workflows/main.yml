@@ -28,11 +28,10 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl -X POST "$deploy_url"
-      - name: Publish code coverage
-        uses: qltysh/qlty-action/coverage@v1
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          JACOCO_SOURCE_PATH: app/src/main/java
-        with:
-          coverageCommand: make report
-          coverageLocations: ${{ github.workspace }}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+      - name: Upload code coverage to Qlty
+  	uses: qlty-dev/coverage-action@v1
+  	with:
+    	  token: ${{ secrets.QLTY_TOKEN }}
+    	  coverage-file: app/build/reports/jacoco/test/jacocoTestReport.xml
+    	  format: jacoco
+          project-root: app/src/main/java
