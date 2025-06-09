@@ -38,7 +38,7 @@ lint:
 
 check-deps:
 	chmod +x ./gradlew
-	./gradlew dependencyUpdates -Drevision=release
+	./gradlew dependencyUpdates -D revision=release
 
 start:
 	chmod +x ./gradlew
