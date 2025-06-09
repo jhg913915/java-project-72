@@ -28,7 +28,7 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl -X POST "$deploy_url"
-      - name: Upload code coverage to Qlty
+      - name: Publish code coverage
   	uses: qlty-dev/coverage-action@v1
   	with:
     	  token: ${{ secrets.CC_TEST_REPORTER_ID }}
