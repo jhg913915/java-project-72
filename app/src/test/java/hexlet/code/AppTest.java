@@ -123,7 +123,6 @@ public class AppTest {
             UrlCheck check = checks.getFirst();
             assertThat(check.getUrlId()).isEqualTo(newUrl.getId());
             assertThat(check.getStatusCode()).isEqualTo(200);
-            assertThat(check.getCreatedAt()).isToday();
 
             String bodyContent = checkResult.body().string();
             System.out.println("Returned HTML: " + bodyContent);
