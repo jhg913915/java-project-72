@@ -48,25 +48,28 @@ public class UrlController {
     public static void add(Context ctx) throws SQLException,
             IllegalArgumentException {
         var name = ctx.formParam("url");
+        String schema;
+        String authority;
         try {
             URL absoluteUrl = new URI(name).toURL();
-            String schema = absoluteUrl.toURI().getScheme();
-            String authority = absoluteUrl.toURI().getAuthority();
-            Url url = new Url(schema + "://" + authority);
-            Optional<Url> foundedUrl = UrlRepository.findByName(url.getName());
-            if (foundedUrl.isEmpty()) {
-                UrlRepository.save(url);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("flashType", "alert-success");
-            } else {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flashType", "alert-info");
-            }
-            ctx.redirect(NamedRoutes.urlsPath());
+            schema = absoluteUrl.toURI().getScheme();
+            authority = absoluteUrl.toURI().getAuthority();
         } catch (URISyntaxException | IllegalArgumentException | IOException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flashType", "alert-danger");
             ctx.redirect(NamedRoutes.rootPath());
+            return;
         }
+        Url url = new Url(schema + "://" + authority);
+        Optional<Url> foundedUrl = UrlRepository.findByName(url.getName());
+        if (foundedUrl.isEmpty()) {
+            UrlRepository.save(url);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flashType", "alert-success");
+        } else {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flashType", "alert-info");
+        }
+        ctx.redirect(NamedRoutes.urlsPath());
     }
 }
