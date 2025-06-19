@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public final class Url {
     private Long id;
     @ToString.Include
     private String name;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     @ToString.Exclude
     private List<UrlCheck> checks;
 

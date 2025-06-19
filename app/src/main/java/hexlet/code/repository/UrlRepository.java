@@ -22,7 +22,7 @@ public class UrlRepository extends BaseRepository {
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 url.setId(generatedKeys.getLong(1));
-                url.setCreatedAt(new Timestamp(System.currentTimeMillis())/*generatedKeys.getTimestamp(2)*/);
+                url.setCreatedAt(new Timestamp(System.currentTimeMillis()).toLocalDateTime());
             } else {
                 throw new SQLException("DB have not returned an id or createdAt after saving an entity");
             }
@@ -41,7 +41,7 @@ public class UrlRepository extends BaseRepository {
                 var resultId = resultSet.getLong("id");
                 Url resultUrl = new Url(resultName);
                 resultUrl.setId(resultId);
-                resultUrl.setCreatedAt(resultCreatedAt);
+                resultUrl.setCreatedAt(resultCreatedAt.toLocalDateTime());
                 List<UrlCheck> checks = UrlCheckRepository.findByUrlId(resultId);
                 resultUrl.setChecks(checks);
                 return Optional.of(resultUrl);
@@ -62,7 +62,7 @@ public class UrlRepository extends BaseRepository {
                 var resultCreatedAt = resultSet.getTimestamp("created_at");
                 Url resultUrl = new Url(resultName);
                 resultUrl.setId(resultId);
-                resultUrl.setCreatedAt(resultCreatedAt);
+                resultUrl.setCreatedAt(resultCreatedAt.toLocalDateTime());
                 return Optional.of(resultUrl);
             }
             return Optional.empty();
@@ -79,7 +79,7 @@ public class UrlRepository extends BaseRepository {
                 var name = resultSet.getString("name");
                 var url = new Url(name);
                 url.setId(resultSet.getLong("id"));
-                url.setCreatedAt(resultSet.getTimestamp("created_at"));
+                url.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
                 result.add(url);
             }
             return result;

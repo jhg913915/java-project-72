@@ -27,7 +27,7 @@ public class UrlCheckRepository extends BaseRepository {
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 urlCheck.setId(generatedKeys.getLong(1));
-                urlCheck.setCreatedAt(new Timestamp(System.currentTimeMillis()/*generatedKeys.getTimestamp(2)*/));
+                urlCheck.setCreatedAt(new Timestamp(System.currentTimeMillis()).toLocalDateTime());
             } else {
                 throw new SQLException("DB have not returned an id or createdAt after saving an entity");
             }
@@ -55,7 +55,7 @@ public class UrlCheckRepository extends BaseRepository {
                         resultDescription,
                         resultUrlId);
                 urlCheck.setId(resultId);
-                urlCheck.setCreatedAt(resultCreatedAt);
+                urlCheck.setCreatedAt(resultCreatedAt.toLocalDateTime());
                 listOfChecks.add(urlCheck);
             }
             return listOfChecks;
@@ -76,7 +76,7 @@ public class UrlCheckRepository extends BaseRepository {
                 Long urlId = resultSet.getLong("url_id");
                 UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, urlId);
                 urlCheck.setId(resultSet.getLong("id"));
-                urlCheck.setCreatedAt(resultSet.getTimestamp("created_at"));
+                urlCheck.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
                 urlCheck.setUrlId(resultSet.getLong("url_id"));
                 result.add(urlCheck);
             }
@@ -104,7 +104,7 @@ public class UrlCheckRepository extends BaseRepository {
                 Long urlId = resultSet.getLong("url_id");
                 UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, urlId);
                 urlCheck.setId(resultSet.getLong("id"));
-                urlCheck.setCreatedAt(resultSet.getTimestamp("created_at"));
+                urlCheck.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
                 result.add(urlCheck);
             }
             return result;
